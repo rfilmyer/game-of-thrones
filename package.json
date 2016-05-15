@@ -1,29 +1,30 @@
 {
-	
-	"name": "game-of-thrones",
-	"description": "Foursquare for toilets. SoMoLo Gamification of Defacation",
-	"version": "0.0.0",
-	"main": "app.js",
-	"license": "MIT",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/rfilmyer/game-of-thrones.git"
-	},
-	"engines": {
-		"node": ">=0.10.0"
-	},
-	"dependencies": {
-		"flake-idgen": "^1.0.0",
-		"biguint-format": "^1.0.0",
-		"mraa": "^1.0.0",
-		"death": "^1.0.0",
-		"yargs": "^4.7.0",
-		"winston": "^2.2.0",
-		"express": "^4.13.4",
-    	"jade": "^1.11.0"
-	},
-	"devDependencies": {
-		"typescript": "^1.8.10"
-	}
+  "name": "game-of-thrones",
+  "description": "Foursquare for toilets. SoMoLo Gamification of Defacation",
+  "version": "0.0.0",
+  "main": "app.js",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rfilmyer/game-of-thrones.git"
+  },
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "dependencies": {
+    "biguint-format": "^1.0.0",
+    "body-parser": "^1.15.1",
+    "death": "^1.0.0",
+    "express": "^4.13.4",
+    "flake-idgen": "^1.0.0",
+    "jade": "^1.11.0",
+    "mraa": "^1.0.0",
+    "nodemon": "^1.9.2",
+    "path": "^0.12.7",
+    "winston": "^2.2.0",
+    "yargs": "^4.7.0"
+  },
+  "devDependencies": {
+    "typescript": "^1.8.10"
+  }
 }
-

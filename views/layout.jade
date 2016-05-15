@@ -1,16 +1,20 @@
 html 
 	head
-		title = 'Shitistics'
-		block head
-			script(src='')
+		title = 'Game of Thrones'
+		script(src='')
 	body 
-		block content 
-			h1 This Fucking Website 
-			ul.loginForm
-				li Sign up
-				li Login
-			.container
-				.ranking
-					
+	block content 
+		h1 This Fucking Website 
+		ul.loginForm
+			li <a href="/signup">Sign Up</a>
+			li <a href="/login">Login</a>
+		script.
+			//-var peoples = JSON.parse( !{JSON.stringify(peoples)} );		
+		each people in peoples
+			p #{people.name}
+			p #{people.justification}
+		
+				
+
 				
 
