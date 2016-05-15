@@ -1,3 +1,70 @@
+/*************************
+Detection.ts
+
+The interface between the pressure sensor and the website backend.
+
+This module detects state changes in the pressure sensor and 
+	logs them to the database, stored in /db.
+
+This module exports a single class: Bathroom
+
+Bathrooms:
+	Bathrooms represent a single room/game/toilet.
+
+	Creation:
+	Bathroom(collectionName, timeout?): Creates a new Bathroom instance.
+		collectionName (string): The name of the forerunnerDB collection where data can be stored.
+		timeout (number): If a session stops and starts within this timeout, 
+			it will be considered an accidental button unpress.
+
+	Methods:
+	Bathrooms have 3 externally-usable methods, although
+		only `isOn` needs to be used in practice.
+
+		Bathroom.isOn(state): Sets the state of the pressure switch, 
+			creating or ending a session in the process.
+			state: Whether the switch is pressed or unpressed
+
+		Bathroom.start(): Starts or Restarts a session, depending on 
+			whether it's started within the timeout.
+
+		Bathroom.stop(): Ends a bathroom session. After timeout, 
+			writes a record to the database and triggers a commit if the
+			session hasn't been restarted
+
+	Properties:
+	Bathrooms can show state and details about the current session:
+
+		Bathroom.inUse (bool): Shows whether there is an active session in this bathroom.
+
+		Bathroom.currentSession (Session): Shows details about the current session.
+			See information about the Session object below
+
+		Bathroom.pastSessions (Array<Session>): An array of all the previous Session objects.
+			May be deprecated, since the DB has all the necessary information
+
+Sessions (internal class):
+	Sessions correspond to a current use of the Bathroom.
+
+	Properties:
+	Sessions have properties about its current state:
+
+		Session.id (number): The session's ID number, which uses `flake`
+
+		Session.startTime (Date): When this session started
+
+		Session.stopTime (Date): The last time this session stopped. 
+			If a session was stopped and restarted, will show the last stop time.
+
+		Session.running (bool): Whether the session is in progress.
+
+Database Entries:
+	This file stores database entries that are a subset of Session objects.
+	These entries have the following properties:
+		id (number), startTime(Date), stopTime(Date).
+
+*************************/
+
 declare var require: any;
 var FlakeIdGen = require('flake-idgen')
 	, intFormat = require('biguint-format')
@@ -8,7 +75,7 @@ var winston = require('winston');
 var ForerunnerDB = require('forerunnerdb');
 var fdb = new ForerunnerDB();
 var db = fdb.db("game-of-thrones");
-db.presist.dataDir("./configData");
+db.persist.dataDir("./db");
 
 
 // data: 2 variables: last_start and last_stop
@@ -30,7 +97,8 @@ function insertHandler(result: insertResult) {
 	}
 }
 
-export class Session {
+
+class Session {
 	startTime: Date;
 	stopTime: Date; 
 	running: boolean;
@@ -72,7 +140,7 @@ export class Bathroom {
 	sessionDB: 		any;
 
 	constructor(collectionName?: string){
-		let collnameFallback: string = db.collection(collectionName || "Bathroom");
+		let collnameFallback: string = collectionName || "Bathroom";
 		winston.info("New Bathroom created. Collection Name: " + collnameFallback);
 		this.sessionDB = db.collection(collnameFallback, 
 			{primaryKey: "id"}
