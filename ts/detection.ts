@@ -50,6 +50,14 @@ export class Bathroom {
 	currentSession:	Session = null;
 	minTimeGap:		number = 5000; // minimum time (in milliseconds) to register a new session
 
+	inUse = function() {
+		if(this.currentSession){
+			return this.currentSession.running;
+		} else {
+			return false;
+		}
+	}
+
 	rawStart = function() {
 		if (this.currentSession !== null) {
 			throw('A session is currently underway!');

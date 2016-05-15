@@ -38,6 +38,14 @@ var Bathroom = (function () {
         this.pastSessions = [];
         this.currentSession = null;
         this.minTimeGap = 5000; // minimum time (in milliseconds) to register a new session
+        this.inUse = function () {
+            if (this.currentSession) {
+                return this.currentSession.running;
+            }
+            else {
+                return false;
+            }
+        };
         this.rawStart = function () {
             if (this.currentSession !== null) {
                 throw ('A session is currently underway!');
