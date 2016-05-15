@@ -48,7 +48,7 @@ export class Bathroom {
 	lastStopTime:	Date = undefined;
 	pastSessions:	Session[] = [];
 	currentSession:	Session = null;
-	minTimeGap:		number = 100; // minimum time (in milliseconds) to register a new session
+	minTimeGap:		number = 5000; // minimum time (in milliseconds) to register a new session
 
 	rawStart = function() {
 		if (this.currentSession !== null) {
