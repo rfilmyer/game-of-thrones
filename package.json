@@ -1,8 +1,9 @@
 {
+	
 	"name": "game-of-thrones",
 	"description": "Foursquare for toilets. SoMoLo Gamification of Defacation",
 	"version": "0.0.0",
-	"main": "js/test.js",
+	"main": "app.js",
 	"license": "MIT",
 	"repository": {
 		"type": "git",
@@ -17,9 +18,12 @@
 		"mraa": "^1.0.0",
 		"death": "^1.0.0",
 		"yargs": "^4.7.0",
-		"winston": "^2.2.0"
+		"winston": "^2.2.0",
+		"express": "^4.13.4",
+    	"jade": "^1.11.0"
 	},
 	"devDependencies": {
 		"typescript": "^1.8.10"
 	}
 }
+
