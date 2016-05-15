@@ -21,14 +21,15 @@ noisebridge.isOn(true);
 winston.debug(noisebridge.currentSession)
 noisebridge.isOn(false);
 winston.debug(noisebridge.currentSession)
-setTimeout(function(){winston.debug('Past Sessions: ' + noisebridge.pastSessions)}, noisebridge.minTimeGap + 500);
-
-var switchGPIO = new mraa.Gpio(gpioPin);
-switchGPIO.dir(mraa.DIR_IN);
+setTimeout(function(){winston.debug('Past Sessions: ', noisebridge.pastSessions.map(getIDofElement))}, noisebridge.minTimeGap + 500);
+setTimeout(function(){winston.debug('Session IDs in DB: ', noisebridge.sessionDB.find().map(getIDofElement))}, noisebridge.minTimeGap + 500)
 
 if (!argv.g) {
-	winston.info('Skipping GPIO')
+	var switchGPIO = new mraa.Gpio(gpioPin);
+	switchGPIO.dir(mraa.DIR_IN);
 	pollSwitch();
+} else {
+	winston.info('Skipping GPIO');
 }
 
 function pollSwitch(){
@@ -41,6 +42,10 @@ function pollSwitch(){
 		winston.debug('No Current Session');
 	}
 	setTimeout(pollSwitch, 1000);
+}
+
+function getIDofElement(elem){
+	return elem.id;
 }
 
 ON_DEATH(function(){
