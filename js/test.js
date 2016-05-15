@@ -3,6 +3,12 @@ var mraa = require('mraa');
 var ON_DEATH = require('death');
 var argv = require('yargs').argv;
 var winston = require('winston');
+if (argv.v) {
+    winston.level = 'debug';
+}
+if (argv.vv) {
+    winston.level = 'silly';
+}
 var gpioPin = argv.p || 6;
 winston.info("GPIO Pin Number " + gpioPin);
 var noisebridge = new detection.Bathroom();
