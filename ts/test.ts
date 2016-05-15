@@ -26,7 +26,10 @@ setTimeout(function(){winston.debug('Past Sessions: ' + noisebridge.pastSessions
 var switchGPIO = new mraa.Gpio(gpioPin);
 switchGPIO.dir(mraa.DIR_IN);
 
-pollSwitch();
+if (!argv.g) {
+	winston.info('Skipping GPIO')
+	pollSwitch();
+}
 
 function pollSwitch(){
 	var status = switchGPIO.read();
