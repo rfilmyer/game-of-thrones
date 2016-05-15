@@ -1,6 +1,7 @@
 declare var require: any;
 var detection = require('./detection.js');
-var mraa = require('mraa')
+var mraa = require('mraa');
+var ON_DEATH = require('death');
 
 var noisebridge = new detection.Bathroom();
 noisebridge.isOn(true);
@@ -16,7 +17,10 @@ pollSwitch();
 
 function pollSwitch(){
 	var status = switchGPIO.read();
+	console.log('status: ', status)
 	noisebridge.isOn(status == true);
 	console.log(noisebridge.currentSession);
 	setTimeout(pollSwitch, 1000);
 }
+
+ON_DEATH(function(){return noisebridge.pastSessions})
