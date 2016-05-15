@@ -1,14 +1,24 @@
 
 <html> 
   <head>
-    <title>= 'Shitistics'</title>
+    <title>= 'Game of Thrones'</title>
     <script src=""></script>
+    <link href="../css/layout.css" rel="stylesheet"/>
   </head>
-  <body> 
-    <h1>This Fucking Website </h1>
-    <ul class="loginForm">
-      <li><a href="/signup">Sign Up</a></li>
-      <li><a href="/login">Login</a></li>
-    </ul>
-  </body>
+  <body> </body>
+  <div class="main-box">
+    <div class="header">
+      <h1>Game of Thrones </h1>
+    </div>
+
+    <div class="signup-container">
+      <form action="/login" method="post" class="form-signin">
+        <h2 class="form-signin-heading">Please sign in</h2>
+        <input type="text" name="username" placeholder="Email address" class="input-block-level"/>
+        <input type="password" name="password" placeholder="Password" class="input-block-level"/>
+        <input type="submit" value="Submit" class="input-submit"/>
+      </form>
+    </div>
+  </div>
+     
 </html>
