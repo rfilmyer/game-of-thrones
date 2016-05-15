@@ -17,4 +17,7 @@ function pollSwitch() {
     console.log(noisebridge.currentSession);
     setTimeout(pollSwitch, 1000);
 }
-ON_DEATH(function () { return noisebridge.pastSessions; });
+ON_DEATH(function () {
+    console.log(noisebridge.pastSessions);
+    process.exit();
+});

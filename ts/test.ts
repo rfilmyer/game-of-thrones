@@ -26,4 +26,4 @@ function pollSwitch(){
 
 ON_DEATH(function(){
 	console.log(noisebridge.pastSessions); process.exit();
-});
+}); 
