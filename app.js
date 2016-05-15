@@ -8,12 +8,16 @@ app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'jade')
 
 app.get('/', function (req, res) {
-  res.render('layout', {data: peoples})
+  res.render('rankingForm', {data: peoples})
 // es.json {peoples: JSON.stringify(peoples), times: JSON.stringify(times)})
 })
 
 app.get('/login', function (req, res) {
   res.render('loginForm')
+})
+
+app.get('/justify', function (req, res) {
+  res.render('shiTestimony')
 })
 
 app.get('/signup', function (req, res) {
