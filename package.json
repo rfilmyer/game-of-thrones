@@ -1,5 +1,5 @@
 {
-	"name": "Shitbit",
+	"name": "game-of-thrones",
 	"description": "Foursquare for toilets. SoMoLo Gamification of Defacation",
 	"version": "0.0.0",
 	"main": "js/test.js",
@@ -12,7 +12,8 @@
 		"biguint-format": "^1.0.0",
 		"mraa": "^1.0.0",
 		"death": "^1.0.0",
-		"yargs": "^4.7.0"
+		"yargs": "^4.7.0",
+		"winston": "^2.2.0"
 	},
 	"devDependencies": {
 		"typescript": "^1.8.10"

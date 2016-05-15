@@ -2,29 +2,31 @@ var detection = require('./detection.js');
 var mraa = require('mraa');
 var ON_DEATH = require('death');
 var argv = require('yargs').argv;
+var winston = require('winston');
 var gpioPin = argv.p || 6;
+winston.info("GPIO Pin Number " + gpioPin);
 var noisebridge = new detection.Bathroom();
 noisebridge.isOn(true);
-console.log(noisebridge.currentSession);
+winston.debug(noisebridge.currentSession);
 noisebridge.isOn(false);
-console.log(noisebridge.currentSession);
-setTimeout(function () { console.log('Past Sessions: ' + noisebridge.pastSessions); }, noisebridge.minTimeGap + 500);
+winston.debug(noisebridge.currentSession);
+setTimeout(function () { winston.debug('Past Sessions: ' + noisebridge.pastSessions); }, noisebridge.minTimeGap + 500);
 var switchGPIO = new mraa.Gpio(gpioPin);
 switchGPIO.dir(mraa.DIR_IN);
 pollSwitch();
 function pollSwitch() {
     var status = switchGPIO.read();
-    console.log('status: ', status);
+    winston.debug('status: ', status);
     noisebridge.isOn(status == true);
-    console.log('In Use: ', function () { if (noisebridge.inUse()) {
-        return noisebridge.currentSession.id;
+    if (noisebridge.inUse()) {
+        winston.debug('Current Session ID: ' + noisebridge.currentSession.id);
     }
     else {
-        return false;
-    } });
+        winston.debug('No Current Session');
+    }
     setTimeout(pollSwitch, 1000);
 }
 ON_DEATH(function () {
-    console.log(noisebridge.pastSessions);
+    winston.debug(noisebridge.pastSessions);
     process.exit();
 });
