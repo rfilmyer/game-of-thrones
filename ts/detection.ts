@@ -11,7 +11,7 @@ function generateId() {
 	return id;
 }
 
-class Session {
+export class Session {
 	startTime: Date;
 	stopTime: Date; 
 	running: boolean;
@@ -39,12 +39,11 @@ class Session {
 
 function bathroomCleanup(bathroom: Bathroom, id: number){
 	if((bathroom.currentSession.id == id) && !(bathroom.currentSession.running)) {
-		console.log('in bathroomCleanup: '+ bathroom.pastSessions);
 		bathroom.rawStop();
 	}
 };
 
-class Bathroom {
+export class Bathroom {
 	lastStartTime:	Date = undefined;
 	lastStopTime:	Date = undefined;
 	pastSessions:	Session[] = [];
@@ -60,6 +59,7 @@ class Bathroom {
 	}
 	
 	start = function() {
+		/* starts a session */
 		let now: number = new Date().getTime();
 		let thenDate: Date = this.lastStopTime || new Date(0);
 		let then: number = thenDate.getDate();
@@ -77,25 +77,26 @@ class Bathroom {
 	}
 
 	stop = function() {
+		/* Ends a session. Waits until the timegap expires to do final checks.*/
 		let now: Date = new Date();
 		this.lastStopTime = now;
 		this.currentSession.stop(now);
 		let sessionIDToStop: number = this.currentSession.id;
 
-
 		setTimeout(bathroomCleanup(this, sessionIDToStop), this.minTimeGap);
+	}
 
-		// check
+	isOn = function(on: boolean) {
+		/* if the pin is on and there's not a session, start.
+			if the pin is off and there is a session, stop.
+		*/
+		let isRunning: boolean = (this.currentSession || {'running': false}).running
+		if (on && !isRunning){
+			this.start();
+		}
+		if (!on && isRunning) {
+			this.stop();
+		}
 	}
 
 }
-
-
-
-// on stop
-var noisebridge = new Bathroom();
-noisebridge.start();
-console.log(noisebridge.currentSession)
-noisebridge.stop();
-console.log(noisebridge.currentSession)
-setTimeout(function(){console.log('Past Sessions: ' + noisebridge.pastSessions)}, noisebridge.minTimeGap + 1000);

@@ -1,3 +1,4 @@
+"use strict";
 var FlakeIdGen = require('flake-idgen'), intFormat = require('biguint-format'), idGenerator = new FlakeIdGen; // h/t Tom Pawlak's blog post
 // data: 2 variables: last_start and last_stop
 // db with start/stop times
@@ -23,9 +24,9 @@ var Session = (function () {
     }
     return Session;
 }());
+exports.Session = Session;
 function bathroomCleanup(bathroom, id) {
     if ((bathroom.currentSession.id == id) && !(bathroom.currentSession.running)) {
-        console.log('in bathroomCleanup: ' + bathroom.pastSessions);
         bathroom.rawStop();
     }
 }
@@ -45,6 +46,7 @@ var Bathroom = (function () {
             this.lastStartTime = new Date();
         };
         this.start = function () {
+            /* starts a session */
             var now = new Date().getTime();
             var thenDate = this.lastStopTime || new Date(0);
             var then = thenDate.getDate();
@@ -61,20 +63,26 @@ var Bathroom = (function () {
             this.currentSession = null;
         };
         this.stop = function () {
+            /* Ends a session. Waits until the timegap expires to do final checks.*/
             var now = new Date();
             this.lastStopTime = now;
             this.currentSession.stop(now);
             var sessionIDToStop = this.currentSession.id;
             setTimeout(bathroomCleanup(this, sessionIDToStop), this.minTimeGap);
-            // check
+        };
+        this.isOn = function (on) {
+            /* if the pin is on and there's not a session, start.
+                if the pin is off and there is a session, stop.
+            */
+            var isRunning = (this.currentSession || { 'running': false }).running;
+            if (on && !isRunning) {
+                this.start();
+            }
+            if (!on && isRunning) {
+                this.stop();
+            }
         };
     }
     return Bathroom;
 }());
-// on stop
-var noisebridge = new Bathroom();
-noisebridge.start();
-console.log(noisebridge.currentSession);
-noisebridge.stop();
-console.log(noisebridge.currentSession);
-setTimeout(function () { console.log('Past Sessions: ' + noisebridge.pastSessions); }, noisebridge.minTimeGap + 1000);
+exports.Bathroom = Bathroom;
