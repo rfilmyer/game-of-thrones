@@ -1,4 +1,5 @@
 declare var require: any;
+declare var process: any;
 var detection = require('./detection.js');
 var mraa = require('mraa');
 var ON_DEATH = require('death');
@@ -23,4 +24,6 @@ function pollSwitch(){
 	setTimeout(pollSwitch, 1000);
 }
 
-ON_DEATH(function(){return noisebridge.pastSessions})
+ON_DEATH(function(){
+	console.log(noisebridge.pastSessions); process.exit();
+});
