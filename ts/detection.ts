@@ -3,12 +3,31 @@ var FlakeIdGen = require('flake-idgen')
 	, intFormat = require('biguint-format')
 	, idGenerator = new FlakeIdGen; // h/t Tom Pawlak's blog post
 
+var winston = require('winston');
+
+var ForerunnerDB = require('forerunnerdb');
+var fdb = new ForerunnerDB();
+var db = fdb.db("game-of-thrones");
+db.presist.dataDir("./configData");
+
+
 // data: 2 variables: last_start and last_stop
 // db with start/stop times
 
 function generateId() {
 	let id: number = intFormat(idGenerator.next(), 'dec');
 	return id;
+}
+
+interface insertResult {
+	inserted: 	any[];
+	failed: 	any[];
+}
+function insertHandler(result: insertResult) {
+	winston.debug(result.inserted.length + " objects stored in the DB")
+	if (result.failed.length > 0) {
+		winston.warn(result.failed.length + " objects failed to be stored!")
+	}
 }
 
 export class Session {
@@ -33,13 +52,14 @@ export class Session {
 
 	constructor() {
 		this.start();
+		winston.debug('New Session, ID: ' + this.id)
 	}
 
 }
 
 function bathroomCleanup(bathroom: Bathroom, id: number){
 	if((bathroom.currentSession.id == id) && !(bathroom.currentSession.running)) {
-		bathroom.rawStop();
+		bathroom._finalStop();
 	}
 };
 
@@ -49,6 +69,16 @@ export class Bathroom {
 	pastSessions:	Session[] = [];
 	currentSession:	Session = null;
 	minTimeGap:		number = 5000; // minimum time (in milliseconds) to register a new session
+	sessionDB: 		any;
+
+	constructor(collectionName?: string){
+		let collnameFallback: string = db.collection(collectionName || "Bathroom");
+		winston.info("New Bathroom created. Collection Name: " + collnameFallback);
+		this.sessionDB = db.collection(collnameFallback, 
+			{primaryKey: "id"}
+			);
+		this.sessionDB.load();
+	}
 
 	inUse = function() {
 		if(this.currentSession){
@@ -58,7 +88,7 @@ export class Bathroom {
 		}
 	}
 
-	rawStart = function() {
+	_rawStart = function() {
 		if (this.currentSession !== null) {
 			throw('A session is currently underway!');
 		}
@@ -74,13 +104,25 @@ export class Bathroom {
 		if (now - (then || 0) < this.minTimeGap) {
 			this.currentSession.restart();
 		} else {
-			this.rawStart();
+			this._rawStart();
 		}
 	}
 
-	rawStop = function() {
+	_commitDB = function(session: Session) {
+		this.sessionDB.insert({
+			id: 		session.id,
+			startTime: 	fdb.make(session.startTime),
+			stopTime:	fdb.make(session.stopTime)
+
+		}, insertHandler)
+		this.sessionDB.save() // 2 async functions,
+			// no guarantee that the last object was saved.
+	}
+
+	_finalStop = function() {
 		/* call after you're sure that it's over */
 		this.pastSessions.push(this.currentSession)
+		this._commitDB(this.currentSession)
 		this.currentSession = null;
 	}
 

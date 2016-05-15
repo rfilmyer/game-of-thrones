@@ -1,10 +1,21 @@
 "use strict";
 var FlakeIdGen = require('flake-idgen'), intFormat = require('biguint-format'), idGenerator = new FlakeIdGen; // h/t Tom Pawlak's blog post
+var winston = require('winston');
+var ForerunnerDB = require('forerunnerdb');
+var fdb = new ForerunnerDB();
+var db = fdb.db("game-of-thrones");
+db.presist.dataDir("./configData");
 // data: 2 variables: last_start and last_stop
 // db with start/stop times
 function generateId() {
     var id = intFormat(idGenerator.next(), 'dec');
     return id;
+}
+function insertHandler(result) {
+    winston.debug(result.inserted.length + " objects stored in the DB");
+    if (result.failed.length > 0) {
+        winston.warn(result.failed.length + " objects failed to be stored!");
+    }
 }
 var Session = (function () {
     function Session() {
@@ -21,18 +32,19 @@ var Session = (function () {
             this.running = true;
         };
         this.start();
+        winston.debug('New Session, ID: ' + this.id);
     }
     return Session;
 }());
 exports.Session = Session;
 function bathroomCleanup(bathroom, id) {
     if ((bathroom.currentSession.id == id) && !(bathroom.currentSession.running)) {
-        bathroom.rawStop();
+        bathroom._finalStop();
     }
 }
 ;
 var Bathroom = (function () {
-    function Bathroom() {
+    function Bathroom(collectionName) {
         this.lastStartTime = undefined;
         this.lastStopTime = undefined;
         this.pastSessions = [];
@@ -46,7 +58,7 @@ var Bathroom = (function () {
                 return false;
             }
         };
-        this.rawStart = function () {
+        this._rawStart = function () {
             if (this.currentSession !== null) {
                 throw ('A session is currently underway!');
             }
@@ -62,12 +74,22 @@ var Bathroom = (function () {
                 this.currentSession.restart();
             }
             else {
-                this.rawStart();
+                this._rawStart();
             }
         };
-        this.rawStop = function () {
+        this._commitDB = function (session) {
+            this.sessionDB.insert({
+                id: session.id,
+                startTime: fdb.make(session.startTime),
+                stopTime: fdb.make(session.stopTime)
+            }, insertHandler);
+            this.sessionDB.save(); // 2 async functions,
+            // no guarantee that the last object was saved.
+        };
+        this._finalStop = function () {
             /* call after you're sure that it's over */
             this.pastSessions.push(this.currentSession);
+            this._commitDB(this.currentSession);
             this.currentSession = null;
         };
         this.stop = function () {
@@ -90,6 +112,10 @@ var Bathroom = (function () {
                 this.stop();
             }
         };
+        var collnameFallback = db.collection(collectionName || "Bathroom");
+        winston.info("New Bathroom created. Collection Name: " + collnameFallback);
+        this.sessionDB = db.collection(collnameFallback, { primaryKey: "id" });
+        this.sessionDB.load();
     }
     return Bathroom;
 }());
