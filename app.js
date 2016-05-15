@@ -4,18 +4,20 @@ var express = require('Express'),
   app = new express()
 
 app.use(bodyParser.json())
-app.set('views', path.join(__dirname, 'views'))
 
 app.get('/', function (req, res) {
-  res.sendFile('layout.html')
+  app.use('/css', express.static(path.join(__dirname, 'css')))
+  res.sendFile(path.join(__dirname, 'views/layout.html'))
 })
 
 app.get('/login', function (req, res) {
-  res.sendFile('loginForm.html')
+  app.use('/css', express.static(path.join(__dirname, 'css')))
+  res.sendFile(path.join(__dirname, 'views/loginForm.html'))
 })
 
 app.get('/justify', function (req, res) {
-  res.sendFile('shiTestimony.html')
+  app.use('/css', express.static(path.join(__dirname, 'css')))
+  res.sendFile(path.join(__dirname, 'views/shiTestimony.html'))
 })
 
 app.listen(3000)
