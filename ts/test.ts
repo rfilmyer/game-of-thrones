@@ -12,6 +12,8 @@ setTimeout(function(){console.log('Past Sessions: ' + noisebridge.pastSessions)}
 var switchGPIO = new mraa.Gpio(6);
 switchGPIO.dir(mraa.DIR_IN);
 
+pollSwitch();
+
 function pollSwitch(){
 	var status = switchGPIO.read();
 	noisebridge.isOn(status == true);
