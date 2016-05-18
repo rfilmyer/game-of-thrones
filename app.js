@@ -7,16 +7,19 @@ app.use(bodyParser.json())
 
 app.get('/', function (req, res) {
   app.use('/css', express.static(path.join(__dirname, 'css')))
+  app.use('/img', express.static(path.join(__dirname, 'img')))
   res.sendFile(path.join(__dirname, 'views/layout.html'))
 })
 
 app.get('/login', function (req, res) {
   app.use('/css', express.static(path.join(__dirname, 'css')))
+  app.use('/img', express.static(path.join(__dirname, 'img')))
   res.sendFile(path.join(__dirname, 'views/loginForm.html'))
 })
 
 app.get('/justify', function (req, res) {
   app.use('/css', express.static(path.join(__dirname, 'css')))
+  app.use('/img', express.static(path.join(__dirname, 'img')))
   res.sendFile(path.join(__dirname, 'views/shiTestimony.html'))
 })
 

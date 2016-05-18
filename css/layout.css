@@ -1,57 +1,67 @@
 body{
-	font-family: 'Lusitana', serif;
-}
-main-box{
-	width: 700px;
-	height: 800px;
-	position: relative;
-}
-h1{
-	font-size: 40px;
-	position: relative;
-	left: 480px;
-	top: 20px;
-
+	font-family: 'lusitana', serif;
+	margin: 0;
 }
 
-.header{
-	border-bottom: black 1px solid;
-}
-
-.name{
+nav {
+	background-image: url("/img/toilet.jpg");
+	background-size: cover;
+	color: white;
+	padding: 1%;
 	display: block;
-	font-size: 20px;
 }
-.forms{
-	position: absolute;
-	top: 30px;
-	right: 100px;
+
+h1 {
+	display: flex;
+	justify-content: center;
+	margin: 0;
+	font-size: 4em;
+	font-weight: normal;
 }
-.signup{
-	border-right: 1px black solid;
-	padding-right: 3px;
+
+nav ul {
+	display: flex;
+	justify-content: flex-end;
+	margin: 0;
+}
+
+nav li {
+	display: inline;
+	list-style: none;
+	padding: 0px 5px;
+}
+
+nav a {
+	color: white;
+}
+
+ol {
+	list-style-type: none;
+	margin: auto;
+	width: 60%;
+	padding: 0 5%;
+	border: black solid; 
+	border-width: 0 1px;
+
+}
+
+ol li {
+	padding-bottom: 5%;
+}
+
+.session * {
 	display: inline-block;
-	font-style: sans-serif;
-	font-size: 15px;
+	padding: 1%;
+	margin: 0;
+	margin-top: 1%;
+	font-size: 1.25em;
 }
 
-.sign{
-		display: inline-block;
-	font-style: sans-serif;
-	font-size: 15px;
+.session h5 {
+	font-weight: normal;
 }
 
-.main-container{
-	position: relative;
-	margin: 20px auto;
-	width: 500px;
-	height: 800px;
-	border-right: solid black 1px;
-	border-left: solid black 1px;
-}
-
-h4{
-	border-right: solid black 1px;
-	padding-right: 3px;
-	display: inline-block;
+ol p {
+	margin: 0;
+	padding-bottom: 2%;
 }
